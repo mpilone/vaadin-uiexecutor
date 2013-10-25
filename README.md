@@ -4,6 +4,8 @@ A framework for safely implementing background tasks in Vaadin including support
 
 This is a work in progress and it has not been thoroughly tested. I'm interested in feedback and if there is interest I may package it up as a full add-on. Ideally this functionality would be rolled into Vaadin core but it makes sense to prove out the concepts independently first.
 
+Refer to the JavaDoc for more details. All the classes and interfaces are fully documented.
+
 ## Example Usage
 
 First, create an instance of a UIExecutor such as CurrentUIExecutor or DynamicPollingManualPushUIExecutor. This is normally done via your DI framework such as Spring.
