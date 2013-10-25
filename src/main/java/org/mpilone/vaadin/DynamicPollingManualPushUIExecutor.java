@@ -1,7 +1,7 @@
 package org.mpilone.vaadin;
 
-import org.prss.contentdepot.vaadin.uitask.UIRunnableFuture.CompleteEvent;
-import org.prss.contentdepot.vaadin.uitask.UIRunnableFuture.CompleteListener;
+import org.mpilone.vaadin.UIRunnableFuture.CompleteEvent;
+import org.mpilone.vaadin.UIRunnableFuture.CompleteListener;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -48,8 +48,8 @@ public class DynamicPollingManualPushUIExecutor extends CurrentUIExecutor {
    * (non-Javadoc)
    * 
    * @see
-   * org.prss.contentdepot.vaadin.uitask.CurrentUIExecutor#prepareForExecution
-   * (com.vaadin.ui.UI, org.prss.contentdepot.vaadin.uitask.UIRunnableFuture)
+   * org.mpilone.vaadin.CurrentUIExecutor#prepareForExecution
+   * (com.vaadin.ui.UI, org.mpilone.vaadin.UIRunnableFuture)
    */
   @Override
   protected void prepareForExecution(UI ui, UIRunnableFuture runnableFuture) {

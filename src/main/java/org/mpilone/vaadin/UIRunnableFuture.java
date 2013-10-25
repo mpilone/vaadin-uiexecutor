@@ -276,7 +276,7 @@ public class UIRunnableFuture implements UIRunnable, RunnableFuture<Void> {
    * (non-Javadoc)
    * 
    * @see
-   * org.prss.contentdepot.vaadin.uitask.UIRunnable#runInUI(java.lang.Throwable)
+   * org.mpilone.vaadin.UIRunnable#runInUI(java.lang.Throwable)
    */
   @Override
   public void runInUI(Throwable ex) {
@@ -288,7 +288,7 @@ public class UIRunnableFuture implements UIRunnable, RunnableFuture<Void> {
   /*
    * (non-Javadoc)
    * 
-   * @see org.prss.contentdepot.vaadin.uitask.UIRunnable#runInBackground()
+   * @see org.mpilone.vaadin.UIRunnable#runInBackground()
    */
   @Override
   public void runInBackground() {

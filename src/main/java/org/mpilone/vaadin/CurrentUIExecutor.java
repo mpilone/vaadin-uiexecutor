@@ -21,8 +21,7 @@ public class CurrentUIExecutor implements UIExecutor {
   /*
    * (non-Javadoc)
    * 
-   * @see org.prss.contentdepot.vaadin.uitask.UITaskExecutor#execute(org.prss.
-   * contentdepot.vaadin.uitask.UITask)
+   * @see org.mpilone.vaadin.UIExecutor#executeAndAccess(org.mpilone.vaadin.UIRunnable)
    */
   @Override
   public Future<Void> executeAndAccess(final UIRunnable runnable) {
@@ -54,7 +53,7 @@ public class CurrentUIExecutor implements UIExecutor {
    * (non-Javadoc)
    * 
    * @see
-   * org.prss.contentdepot.vaadin.uitask.UIExecutor#access(java.lang.Runnable)
+   * org.mpilone.vaadin.UIExecutor#access(java.lang.Runnable)
    */
   @Override
   public Future<Void> access(Runnable runnable) {
@@ -65,7 +64,7 @@ public class CurrentUIExecutor implements UIExecutor {
    * (non-Javadoc)
    * 
    * @see
-   * org.prss.contentdepot.vaadin.uitask.UIExecutor#accessSynchronously(java
+   * org.mpilone.vaadin.UIExecutor#accessSynchronously(java
    * .lang.Runnable)
    */
   @Override
