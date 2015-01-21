@@ -1,4 +1,4 @@
-package org.mpilone.vaadin;
+package org.mpilone.vaadin.uitask;
 
 import java.lang.reflect.Method;
 import java.util.EventObject;
@@ -6,6 +6,7 @@ import java.util.concurrent.*;
 
 import com.vaadin.event.EventRouter;
 import com.vaadin.ui.UI;
+import com.vaadin.util.ReflectTools;
 
 /**
  * <p>
@@ -29,19 +30,9 @@ public class UIRunnableFuture implements UIRunnable, RunnableFuture<Void> {
    * The method to call on the {@link CompleteListener} when firing the complete
    * event.
    */
-  private static final Method COMPLETE_METHOD;
+  private static final Method COMPLETE_METHOD = ReflectTools.findMethod(
+      CompleteListener.class, "uiRunnableComplete", CompleteEvent.class);
 
-  static {
-    try {
-      COMPLETE_METHOD =
-        CompleteListener.class.getMethod("uiRunnableComplete",
-          CompleteEvent.class);
-    }
-    catch (NoSuchMethodException ex) {
-      throw new RuntimeException("Unable to find taskRunnableComplete method.",
-        ex);
-    }
-  }
 
   /**
    * The mutex for swapping futures to ensure that the active future is safely
@@ -60,7 +51,7 @@ public class UIRunnableFuture implements UIRunnable, RunnableFuture<Void> {
    * to execute before this task is considered complete. Calls to {@link #get()}
    * will block on this latch until it reaches 0.
    */
-  private CountDownLatch doneLatch = new CountDownLatch(2);
+  private final CountDownLatch doneLatch = new CountDownLatch(2);
 
   /**
    * The UI to synchronize with when updating from a background thread.
@@ -92,6 +83,36 @@ public class UIRunnableFuture implements UIRunnable, RunnableFuture<Void> {
    * Constructs the runnable future which, when executed, will run the
    * background work, synchronize with the UI, then run the UI work. The
    * background and synchronized UI run methods will be delegated to the given
+   * runnables if not null.
+   *
+   * @param backgroundRunnable the runnable to execute in a background thread
+   * @param uiRunnable the runnable to execute in the UI synchronized thread
+   * @param ui the UI to synchronize work before updating any UI components
+   */
+  public UIRunnableFuture(final Runnable backgroundRunnable,
+      final Runnable uiRunnable, UI ui) {
+    this(new UIRunnable() {
+
+      @Override
+      public void runInUI(Throwable ex) {
+        if (uiRunnable != null) {
+          uiRunnable.run();
+        }
+      }
+
+      @Override
+      public void runInBackground() {
+        if (backgroundRunnable != null) {
+          backgroundRunnable.run();
+        }
+      }
+    }, ui);
+  }
+
+  /**
+   * Constructs the runnable future which, when executed, will run the
+   * background work, synchronize with the UI, then run the UI work. The
+   * background and synchronized UI run methods will be delegated to the given
    * runnable if not null.
    * 
    * @param runnable
@@ -114,7 +135,7 @@ public class UIRunnableFuture implements UIRunnable, RunnableFuture<Void> {
     // We wrap the runnable in a future task to get a common API to which to
     // delegate. The task also handles all the tricky exception handling and
     // thread safe cancellation.
-    this.future = new FutureTask<Void>(new RunInBackgroundRunnable(), null);
+    this.future = new FutureTask<>(new RunInBackgroundRunnable(), null);
   }
 
   /**
@@ -147,7 +168,7 @@ public class UIRunnableFuture implements UIRunnable, RunnableFuture<Void> {
    */
   @Override
   public boolean cancel(boolean mayInterruptIfRunning) {
-    boolean result = false;
+    boolean result;
 
     synchronized (futureMutex) {
       result = future.cancel(mayInterruptIfRunning);
@@ -276,7 +297,7 @@ public class UIRunnableFuture implements UIRunnable, RunnableFuture<Void> {
    * (non-Javadoc)
    * 
    * @see
-   * org.mpilone.vaadin.UIRunnable#runInUI(java.lang.Throwable)
+   * org.prss.contentdepot.vaadin.uitask.UIRunnable#runInUI(java.lang.Throwable)
    */
   @Override
   public void runInUI(Throwable ex) {
@@ -288,7 +309,7 @@ public class UIRunnableFuture implements UIRunnable, RunnableFuture<Void> {
   /*
    * (non-Javadoc)
    * 
-   * @see org.mpilone.vaadin.UIRunnable#runInBackground()
+   * @see org.prss.contentdepot.vaadin.uitask.UIRunnable#runInBackground()
    */
   @Override
   public void runInBackground() {
@@ -382,7 +403,7 @@ public class UIRunnableFuture implements UIRunnable, RunnableFuture<Void> {
    * @author mpilone
    */
   private class RunInUIRunnable implements Runnable {
-    private Throwable exception;
+    private final Throwable exception;
 
     /**
      * Constructs the runnable.

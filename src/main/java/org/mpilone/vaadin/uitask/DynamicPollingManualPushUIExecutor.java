@@ -1,7 +1,7 @@
-package org.mpilone.vaadin;
+package org.mpilone.vaadin.uitask;
 
-import org.mpilone.vaadin.UIRunnableFuture.CompleteEvent;
-import org.mpilone.vaadin.UIRunnableFuture.CompleteListener;
+import org.mpilone.vaadin.uitask.UIRunnableFuture.CompleteEvent;
+import org.mpilone.vaadin.uitask.UIRunnableFuture.CompleteListener;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -16,9 +16,11 @@ import com.vaadin.ui.UI;
  * is configured for push rather than polling, the polling interval will not be
  * changed but the {@link UI#push()} method will be called when a task
  * completes.
- * 
+ *
  * @author mpilone
+ * @deprecated Use the {@link StrategyUIExecutor} instead
  */
+@Deprecated
 public class DynamicPollingManualPushUIExecutor extends CurrentUIExecutor {
 
   /**
@@ -46,10 +48,10 @@ public class DynamicPollingManualPushUIExecutor extends CurrentUIExecutor {
 
   /*
    * (non-Javadoc)
-   * 
+   *
    * @see
-   * org.mpilone.vaadin.CurrentUIExecutor#prepareForExecution
-   * (com.vaadin.ui.UI, org.mpilone.vaadin.UIRunnableFuture)
+   * org.prss.contentdepot.vaadin.uitask.CurrentUIExecutor#prepareForExecution
+   * (com.vaadin.ui.UI, org.prss.contentdepot.vaadin.uitask.UIRunnableFuture)
    */
   @Override
   protected void prepareForExecution(UI ui, UIRunnableFuture runnableFuture) {
@@ -70,7 +72,7 @@ public class DynamicPollingManualPushUIExecutor extends CurrentUIExecutor {
   /**
    * Constructs the complete listener to be notified when a submitted task
    * completes execution.
-   * 
+   *
    * @return the complete listener
    */
   private CompleteListener createCompleteListener() {
@@ -89,12 +91,12 @@ public class DynamicPollingManualPushUIExecutor extends CurrentUIExecutor {
   /**
    * Called by the complete listener to adjust the polling interval or perform a
    * manual push.
-   * 
+   *
    * @param ui
    *          the UI to update or push
    */
-  private void taskFinish(UI ui) {
-    pendingTasks--;
+  private synchronized void taskFinish(UI ui) {
+    pendingTasks = Math.max(pendingTasks - 1, 0);
 
     if (ui.getPushConfiguration().getPushMode() == PushMode.DISABLED
       && pendingTasks == 0 && ui.getPollInterval() != normalPollInterval) {
@@ -117,11 +119,11 @@ public class DynamicPollingManualPushUIExecutor extends CurrentUIExecutor {
   /**
    * Called when a task is submitted for execution to adjust the polling
    * interval.
-   * 
+   *
    * @param ui
    *          the UI to update
    */
-  private void taskStart(UI ui) {
+  private synchronized void taskStart(UI ui) {
 
     if (ui.getPushConfiguration().getPushMode() == PushMode.DISABLED
       && ui.getPollInterval() != workPollInterval) {
@@ -141,7 +143,7 @@ public class DynamicPollingManualPushUIExecutor extends CurrentUIExecutor {
    * Sets the poll interval when work is pending and therefore the client is
    * expecting a server s generated change. This interval is normally small
    * (e.g. 800 milliseconds).
-   * 
+   *
    * @param workPollInterval
    *          the interval in milliseconds
    */
@@ -153,7 +155,7 @@ public class DynamicPollingManualPushUIExecutor extends CurrentUIExecutor {
    * Sets the poll interval when work is not pending and therefore the client is
    * not expecting a server generated change. This interval is normally large
    * (e.g. 15000 milliseconds) to limit wasted network round trips.
-   * 
+   *
    * @param normalPollInterval
    *          the interval in milliseconds
    */

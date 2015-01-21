@@ -1,4 +1,4 @@
-package org.mpilone.vaadin;
+package org.mpilone.vaadin.uitask;
 
 import com.vaadin.server.VaadinSession;
 

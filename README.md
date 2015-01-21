@@ -1,4 +1,4 @@
-# Vaadin UIExecutor
+# UI Executor for Vaadin
 
 A framework for safely implementing background tasks in Vaadin including support for dynamic polling intervals or manual push. The framework makes it a little easier to write cancelable background tasks that safely access the UI for updates and at the same time makes it easier to unit test presenters/view-models that need to execute background tasks.
 
@@ -8,7 +8,7 @@ Refer to the JavaDoc for more details. All the classes and interfaces are fully 
 
 ## Example Usage
 
-First, create an instance of a UIExecutor such as CurrentUIExecutor or DynamicPollingManualPushUIExecutor. This is normally done via your DI framework such as Spring.
+First, create an instance of a UIExecutor such as the StrategyUIExecutor and set the desired UI locator strategy and executor. This is normally done via your DI framework such as Spring.
 
 Second, implement the UIRunnable interface to define your task. For example:
 
