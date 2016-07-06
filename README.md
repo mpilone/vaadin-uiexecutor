@@ -1,5 +1,9 @@
 # UI Executor for Vaadin
 
+# DEPRECATED
+
+This framework is now deprecated. Take a look at [UITask for Vaadin](https://github.com/mpilone/uitask-vaadin) instead. It is a more simplified framework that provides similar functionality while using Java's Future and Executors to avoid additional classes/complexity.
+
 A framework for safely implementing background tasks in Vaadin including support for dynamic polling intervals or manual push. The framework makes it a little easier to write cancelable background tasks that safely access the UI for updates and at the same time makes it easier to unit test presenters/view-models that need to execute background tasks.
 
 This is a work in progress and it has not been thoroughly tested. I'm interested in feedback and if there is interest I may package it up as a full add-on. Ideally this functionality would be rolled into Vaadin core but it makes sense to prove out the concepts independently first.
